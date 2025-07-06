@@ -41,8 +41,8 @@ void() func_pushable_think =
     self.velocity_y = self.velocity_y * 0.85;
 
     // Check if still grounded
-    trace_ent = trace(self.origin, self.mins, self.maxs, self.origin + '0 0 -1', MOVE_NORMAL, self);
-    self.grounded = trace_ent.startsolid == 0 && trace_ent.fraction < 1;
+    //trace_ent = trace(self.origin, self.mins, self.maxs, self.origin + '0 0 -1', MOVE_NORMAL, self);
+    //self.grounded = trace_ent.startsolid == 0 && trace_ent.fraction < 1;
 
     self.nextthink = time + 0.1;
 };
