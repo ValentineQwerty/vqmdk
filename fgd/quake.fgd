@@ -470,3 +470,8 @@
 [
 	dmg(integer) : "Damage" : 10
 ]
+
+@SolidClass base(Targetname) = func_pushable : "Pushable object"
+[
+    weight(integer) : "Weight" : 100 : "How heavy the object is. Higher values make it harder to push."
+]
