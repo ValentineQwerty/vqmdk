@@ -1,35 +1,35 @@
 ../progs.dat
 
-defs.qc
-subs.qc
-fight.qc
-ai.qc
-combat.qc
-items.qc
-weapons.qc
-world.qc
-client.qc
-player.qc
-monsters.qc
-doors.qc
-buttons.qc
-triggers.qc
-plats.qc
-misc.qc
+core/defs.qc
+systems/subs.qc
+systems/fight.qc
+systems/ai.qc
+systems/combat.qc
+systems/items.qc
+systems/weapons.qc
+core/world.qc
+core/client.qc
+core/player.qc
+systems/monsters.qc
+entities/doors.qc
+entities/buttons.qc
+entities/triggers.qc
+entities/plats.qc
+entities/misc.qc
 
-ogre.qc
-demon.qc
-shambler.qc
-knight.qc
-soldier.qc
-wizard.qc
-dog.qc
-zombie.qc
-boss.qc
+monsters/ogre.qc
+monsters/demon.qc
+monsters/shambler.qc
+monsters/knight.qc
+monsters/soldier.qc
+monsters/wizard.qc
+monsters/dog.qc
+monsters/zombie.qc
+monsters/boss.qc
 
-tarbaby.qc		// registered
-hknight.qc		// registered
-fish.qc			// registered
-shalrath.qc		// registered
-enforcer.qc		// registered
-oldone.qc		// registered
+monsters/tarbaby.qc    // registered - for the full version of Quake
+monsters/hknight.qc    // registered
+monsters/fish.qc       // registered
+monsters/shalrath.qc   // registered
+monsters/enforcer.qc   // registered
+monsters/oldone.qc     // registered
