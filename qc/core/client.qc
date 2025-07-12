@@ -280,7 +280,7 @@ void() execute_changelevel =
 
 	pos = FindIntermission();
 
-	other = find(world, classname, "player");
+	other = find(world, classname, CLASS_PLAYER);
 	while (other != world)
 	{
 		other.view_ofs = '0 0 0';
@@ -292,7 +292,7 @@ void() execute_changelevel =
 		other.movetype = MOVETYPE_NONE;
 		other.modelindex = 0;
 		setorigin(other, pos.origin);
-		other = find(other, classname, "player");
+		other = find(other, classname, CLASS_PLAYER);
 	}
 
 	WriteByte(MSG_ALL, SVC_INTERMISSION);
@@ -301,7 +301,7 @@ void() execute_changelevel =
 
 void() changelevel_touch =
 {
-	if (other.classname != "player")
+	if (other.classname != CLASS_PLAYER)
 		return;
 
 	if (cvar("noexit"))
@@ -466,7 +466,7 @@ void() PutClientInServer =
 {
 	entity spot;
 
-	self.classname = "player";
+	self.classname = CLASS_PLAYER;
 	self.health = 100;
 	self.takedamage = DAMAGE_AIM;
 	self.solid = SOLID_SLIDEBOX;
@@ -1131,7 +1131,7 @@ void(entity targ, entity attacker) ClientObituary =
 	string deathstring, deathstring2;
 	rnum = random();
 
-	if (targ.classname == "player")
+	if (targ.classname == CLASS_PLAYER)
 	{
 		if (attacker.classname == "teledeath")
 		{
@@ -1154,7 +1154,7 @@ void(entity targ, entity attacker) ClientObituary =
 			return;
 		}
 
-		if (attacker.classname == "player")
+		if (attacker.classname == CLASS_PLAYER)
 		{
 			if (targ == attacker)
 			{

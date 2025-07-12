@@ -46,7 +46,7 @@ void() monster_use =
 		return;
 	if (activator.flags & FL_NOTARGET)
 		return;
-	if (activator.classname != "player")
+	if (activator.classname != CLASS_PLAYER)
 		return;
 
 // delay reaction so if the monster is teleported, its sound is still

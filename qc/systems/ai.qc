@@ -332,7 +332,7 @@ void() SightSound =
 
 void() FoundTarget =
 {
-	if (self.enemy.classname == "player")
+	if (self.enemy.classname == CLASS_PLAYER)
 	{ // let other monsters see this monster for a while
 		sight_entity = self;
 		sight_entity_time = time;
@@ -415,10 +415,10 @@ float() FindTarget =
 // got one
 //
 	self.enemy = client;
-	if (self.enemy.classname != "player")
+	if (self.enemy.classname != CLASS_PLAYER)
 	{
 		self.enemy = self.enemy.enemy;
-		if (self.enemy.classname != "player")
+		if (self.enemy.classname != CLASS_PLAYER)
 		{
 			self.enemy = world;
 			return FALSE;

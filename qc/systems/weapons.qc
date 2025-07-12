@@ -452,9 +452,9 @@ void(vector p1, vector p2, entity from, float damage) LightningDamage =
 	{
 		particle(trace_endpos, '0 0 100', 225, damage*4);
 		T_Damage(trace_ent, from, from, damage);
-		if (self.classname == "player")
+		if (self.classname == CLASS_PLAYER)
 		{
-			if (other.classname == "player")
+			if (other.classname == CLASS_PLAYER)
 				trace_ent.velocity_z = trace_ent.velocity_z + 400;
 		}
 	}

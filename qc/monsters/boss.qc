@@ -61,9 +61,9 @@ void() boss_face =
 // go for another player if multi player
 	if (self.enemy.health <= 0 || random() < 0.02)
 	{
-		self.enemy = find(self.enemy, classname, "player");
+		self.enemy = find(self.enemy, classname, CLASS_PLAYER);
 		if (!self.enemy)
-			self.enemy = find(self.enemy, classname, "player");
+			self.enemy = find(self.enemy, classname, CLASS_PLAYER);
 	}
 	ai_face();
 };

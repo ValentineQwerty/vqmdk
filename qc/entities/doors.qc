@@ -212,7 +212,7 @@ Prints messages and opens key doors
 */
 void() door_touch =
 {
-	if (other.classname != "player")
+	if (other.classname != CLASS_PLAYER)
 		return;
 	if (self.owner.attack_finished > time)
 		return;
@@ -709,7 +709,7 @@ Prints messages
 */
 void() secret_touch =
 {
-	if (other.classname != "player")
+	if (other.classname != CLASS_PLAYER)
 		return;
 	if (self.attack_finished > time)
 		return;

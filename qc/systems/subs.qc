@@ -252,7 +252,7 @@ void() SUB_UseTargets =
 //
 // print the message
 //
-	if (activator.classname == "player" && self.message != "")
+	if (activator.classname == CLASS_PLAYER && self.message != "")
 	{
 		centerprint(activator, self.message);
 		if (!self.noise)

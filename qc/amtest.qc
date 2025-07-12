@@ -78,7 +78,7 @@ void() test_spawn =
 	body = spawn();
 	setmodel(body, "progs/soldier.mdl");
 	setorigin(body, self.origin);
-	body.classname = "player";
+	body.classname = CLASS_PLAYER;
 	body.health = 1000;
 	body.frags = 0;
 	body.takedamage = DAMAGE_AIM;

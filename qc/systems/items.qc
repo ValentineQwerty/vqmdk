@@ -169,7 +169,7 @@ void() health_touch =
 {
 	string s;
 
-	if (other.classname != "player")
+	if (other.classname != CLASS_PLAYER)
 		return;
 
 	if (self.healtype == 2) // Megahealth?  Ignore max_health...
@@ -258,7 +258,7 @@ void() armor_touch =
 
 	if (other.health <= 0)
 		return;
-	if (other.classname != "player")
+	if (other.classname != CLASS_PLAYER)
 		return;
 
 	if (self.classname == "item_armor1")
@@ -616,7 +616,7 @@ void() ammo_touch =
 	entity stemp;
 	float best;
 
-	if (other.classname != "player")
+	if (other.classname != CLASS_PLAYER)
 		return;
 	if (other.health <= 0)
 		return;
@@ -886,7 +886,7 @@ KEYS
 
 void() key_touch =
 {
-	if (other.classname != "player")
+	if (other.classname != CLASS_PLAYER)
 		return;
 	if (other.health <= 0)
 		return;
@@ -1019,7 +1019,7 @@ END OF LEVEL RUNES
 
 void() sigil_touch =
 {
-	if (other.classname != "player")
+	if (other.classname != CLASS_PLAYER)
 		return;
 	if (other.health <= 0)
 		return;
@@ -1089,7 +1089,7 @@ void() powerup_touch;
 
 void() powerup_touch =
 {
-	if (other.classname != "player")
+	if (other.classname != CLASS_PLAYER)
 		return;
 	if (other.health <= 0)
 		return;
@@ -1241,7 +1241,7 @@ void() BackpackTouch =
 	float best;
 		entity stemp;
 
-	if (other.classname != "player")
+	if (other.classname != CLASS_PLAYER)
 		return;
 	if (other.health <= 0)
 		return;

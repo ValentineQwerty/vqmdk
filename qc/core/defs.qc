@@ -436,6 +436,13 @@ float skill;
 .float worldtype; // 0 = medieval 1 = metal 2 = base
 
 //================================================
+//
+// Constants
+//
+string CLASS_PLAYER = "player";
+string CLASS_INFO_INTERMISSION = "info_intermission";
+
+//================================================
 
 .string killtarget;
 

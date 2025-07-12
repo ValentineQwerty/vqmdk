@@ -202,7 +202,7 @@ void(entity targ, entity inflictor, entity attacker, float damage) T_Damage=
 		{
 			if ((self.classname != attacker.classname) || (self.classname == "monster_army" ))
 			{
-				if (self.enemy.classname == "player")
+				if (self.enemy.classname == CLASS_PLAYER)
 					self.oldenemy = self.enemy;
 				self.enemy = attacker;
 				FoundTarget();

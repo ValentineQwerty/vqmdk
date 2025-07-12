@@ -1,4 +1,4 @@
-float pushable_sound;
+//float pushable_sound;
 .float weight;     // custom key for how heavy the object is (default: 100)
 .float pushtime;   // time of last sound
 .vector oldorigin; // to track movement
@@ -11,7 +11,7 @@ Optional "weight" key affects how hard it is to push (default: 100).
 
 void() func_pushable_touch =
 {
-    if (other.classname != "player")
+    if (other.classname != CLASS_PLAYER)
         return;
 
     // Ignore dead or idle players

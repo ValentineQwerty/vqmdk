@@ -72,7 +72,7 @@ void() button_use =
 
 void() button_touch =
 {
-	if (other.classname != "player")
+	if (other.classname != CLASS_PLAYER)
 		return;
 	self.enemy = other;
 	button_fire();

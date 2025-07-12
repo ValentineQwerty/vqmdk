@@ -54,7 +54,7 @@ void() multi_trigger =
 
 	if (self.classname == "trigger_secret")
 	{
-		if (self.enemy.classname != "player")
+		if (self.enemy.classname != CLASS_PLAYER)
 			return;
 		found_secrets = found_secrets + 1;
 		WriteByte(MSG_ALL, SVC_FOUNDSECRET);
@@ -98,7 +98,7 @@ void() multi_use =
 
 void() multi_touch =
 {
-	if (other.classname != "player")
+	if (other.classname != CLASS_PLAYER)
 		return;
 
 // if the trigger has an angles field, check player's facing direction
@@ -245,7 +245,7 @@ void() counter_use =
 
 	if (self.count != 0)
 	{
-		if (activator.classname == "player"
+		if (activator.classname == CLASS_PLAYER
 		&& (self.spawnflags & SPAWNFLAG_NOMESSAGE) == 0)
 		{
 			if (self.count >= 4)
@@ -260,7 +260,7 @@ void() counter_use =
 		return;
 	}
 
-	if (activator.classname == "player"
+	if (activator.classname == CLASS_PLAYER
 	&& (self.spawnflags & SPAWNFLAG_NOMESSAGE) == 0)
 		centerprint(activator, "Sequence completed!");
 	self.enemy = activator;
@@ -337,11 +337,11 @@ void() tdeath_touch =
 		return;
 
 // frag anyone who teleports in on top of an invincible player
-	if (other.classname == "player")
+	if (other.classname == CLASS_PLAYER)
 	{
 		if (other.invincible_finished > time)
 			self.classname = "teledeath2";
-		if (self.owner.classname != "player")
+		if (self.owner.classname != CLASS_PLAYER)
 		{ // other monsters explode themselves
 			T_Damage(self.owner, self, self, 50000);
 			return;
@@ -390,7 +390,7 @@ void() teleport_touch =
 
 	if (self.spawnflags & PLAYER_ONLY)
 	{
-		if (other.classname != "player")
+		if (other.classname != CLASS_PLAYER)
 			return;
 	}
 
@@ -424,7 +424,7 @@ void() teleport_touch =
 
 	setorigin(other, t.origin);
 	other.angles = t.mangle;
-	if (other.classname == "player")
+	if (other.classname == CLASS_PLAYER)
 	{
 		other.fixangle = 1; // turn this way immediately
 		other.teleport_time = time + 0.7;
@@ -490,7 +490,7 @@ trigger_setskill
 
 void() trigger_skill_touch =
 {
-	if (other.classname != "player")
+	if (other.classname != CLASS_PLAYER)
 		return;
 
 	cvar_set("skill", self.message);
@@ -517,7 +517,7 @@ ONLY REGISTERED TRIGGERS
 
 void() trigger_onlyregistered_touch =
 {
-	if (other.classname != "player")
+	if (other.classname != CLASS_PLAYER)
 		return;
 	if (self.attack_finished > time)
 		return;
@@ -594,7 +594,7 @@ void() trigger_push_touch =
 	else if (other.health > 0)
 	{
 		other.velocity = self.speed * self.movedir * 10;
-		if (other.classname == "player")
+		if (other.classname == CLASS_PLAYER)
 		{
 			if (other.fly_sound < time)
 			{
