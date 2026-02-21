@@ -262,6 +262,7 @@ void() IntermissionThink =
 	ExitIntermission();
 };
 
+// Change level (with intermission view of the old level before the new one is loaded)
 void() execute_changelevel =
 {
 	entity pos;
