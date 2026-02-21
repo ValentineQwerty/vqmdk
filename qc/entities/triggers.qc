@@ -656,3 +656,63 @@ void() trigger_monsterjump =
 	self.touch = trigger_monsterjump_touch;
 };
 
+
+//============================================================================
+// Brush-based trigger that ends the level when all connected players are inside
+//============================================================================
+
+void() trigger_allplayers =
+{
+    self.movetype = MOVETYPE_NONE;
+    self.solid = SOLID_TRIGGER;
+    setmodel(self, self.model);
+
+    self.think = trigger_allplayers_think;
+    self.nextthink = time + 0.5;
+};
+
+void() trigger_allplayers_think =
+{
+    local entity e;
+    local float total_players, inside_players;
+
+    total_players = 0;
+    inside_players = 0;
+
+    for (e = world; (e = find_entity_by_classname(e, CLASS_PLAYER)); )
+    {
+        if (!e.inuse)
+            continue;
+
+        total_players += 1;
+
+        if (is_inside_my_brush(e))
+        {
+            inside_players += 1;
+        }
+    }
+
+    if (total_players > 0 && inside_players == total_players)
+    {
+        bprint("All players are inside. Ending level...\n");
+
+        if (!self.map)
+        {
+            bprint("ERROR: trigger_allplayers has no 'map' key set!\n");
+            return;
+        }
+
+        // Replace with your level exit logic
+        // For example:
+        // changelevel ("e1m2");
+        //localcmd("changelevel yourmapname\n");
+
+        nextmap = self.map;
+        self.think = execute_changelevel;
+        self.nextthink = time + 0.1;
+
+        return;
+    }
+
+    self.nextthink = time + 0.5;
+};
