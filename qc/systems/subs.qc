@@ -334,3 +334,33 @@ void(void() thinkst) SUB_CheckRefire =
 	self.cnt = 1;
 	self.think = thinkst;
 };
+
+
+/// ==========================================================
+/// Simplifies searching for entities.
+/// ==========================================================
+entity(string entity_classname) find_entity_by_classname =
+{
+	local entity e = world;
+	e = find(e, classname, entity_classname);
+	return e;
+};
+
+entity(string entity_name) find_entity_by_name =
+{
+	local entity e = world;
+	e = find(e, targetname, entity_name);
+	return e;
+};
+
+/// ==========================================================
+/// Utility: check if a point is inside the brush volume
+/// ==========================================================
+float(entity ent) is_inside_my_brush =
+{
+    return (
+        ent.origin_x >= self.absmin_x && ent.origin_x <= self.absmax_x &&
+        ent.origin_y >= self.absmin_y && ent.origin_y <= self.absmax_y &&
+        ent.origin_z >= self.absmin_z && ent.origin_z <= self.absmax_z
+    );
+};
