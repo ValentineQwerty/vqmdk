@@ -475,3 +475,8 @@
 [
     weight(integer) : "Weight" : 100 : "How heavy the object is. Higher values make it harder to push."
 ]
+
+@SolidClass base(Targetname) = trigger_allplayers : "All Players Trigger"
+[
+    map(string) : "Next map to load when all players are inside"
+]
