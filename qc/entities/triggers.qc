@@ -661,16 +661,6 @@ void() trigger_monsterjump =
 // Brush-based trigger that ends the level when all connected players are inside
 //============================================================================
 
-void() trigger_allplayers =
-{
-    self.movetype = MOVETYPE_NONE;
-    self.solid = SOLID_TRIGGER;
-    setmodel(self, self.model);
-
-    self.think = trigger_allplayers_think;
-    self.nextthink = time + 0.5;
-};
-
 void() trigger_allplayers_think =
 {
     local entity e;
@@ -679,11 +669,9 @@ void() trigger_allplayers_think =
     total_players = 0;
     inside_players = 0;
 
-    for (e = world; (e = find_entity_by_classname(e, CLASS_PLAYER)); )
+	e = world;
+    while ((e = find_entity_by_classname(CLASS_PLAYER)))
     {
-        if (!e.inuse)
-            continue;
-
         total_players += 1;
 
         if (is_inside_my_brush(e))
@@ -714,5 +702,15 @@ void() trigger_allplayers_think =
         return;
     }
 
+    self.nextthink = time + 0.5;
+};
+
+void() trigger_allplayers =
+{
+    self.movetype = MOVETYPE_NONE;
+    self.solid = SOLID_TRIGGER;
+    setmodel(self, self.model);
+
+    self.think = trigger_allplayers_think;
     self.nextthink = time + 0.5;
 };
