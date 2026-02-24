@@ -1,1 +1,0 @@
-fteqcc64.exe -std=qcc -src ../qc -o ../qc/progs.dat
