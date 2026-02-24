@@ -25,7 +25,7 @@ void() func_pushable_touch =
     // Play push sound once per second
     if (time > self.pushtime)
     {
-        sound(self, CHAN_BODY, "boss1/throw.wav", 1, ATTN_NORM);
+        sound(self, CHAN_BODY, "zombie/z_shot1.wav", 1, ATTN_NORM);
         self.pushtime = time + 1;
     }
 };
@@ -41,8 +41,12 @@ void() func_pushable_think =
     self.velocity_y = self.velocity_y * 0.85;
 
     // Check if still grounded
-    //trace_ent = trace(self.origin, self.mins, self.maxs, self.origin + '0 0 -1', MOVE_NORMAL, self);
-    //self.grounded = trace_ent.startsolid == 0 && trace_ent.fraction < 1;
+    vector start;
+    vector end;
+    start = self.origin;
+    end = self.origin + '0 0 -1';
+    traceline(start, end, FALSE, self);
+    self.grounded = (trace_startsolid == 0) && (trace_fraction < 1);
 
     self.nextthink = time + 0.1;
 };
