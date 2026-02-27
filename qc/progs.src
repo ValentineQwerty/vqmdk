@@ -1,7 +1,7 @@
 ../progs.dat
 
 core/defs.qc
-systems/subs.qc
+core/subs.qc
 systems/fight.qc
 systems/ai.qc
 systems/combat.qc
@@ -14,7 +14,7 @@ systems/monsters.qc
 entities/doors.qc
 entities/buttons.qc
 entities/triggers.qc
-entities/pushables.qc
+//entities/pushables.qc
 entities/plats.qc
 entities/misc.qc
 
