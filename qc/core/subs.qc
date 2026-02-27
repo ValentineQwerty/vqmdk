@@ -372,4 +372,4 @@ void(string one, string two, string three, string four, string five, float lineb
 	{
 		bprint("\n");
 	}
-}
+};
