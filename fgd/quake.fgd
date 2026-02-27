@@ -399,7 +399,7 @@
 	message(string) : "Message (set sound too!)"
 ]
 
-@SolidClass = trigger_changelevel : "Trigger: Change level"
+@SolidClass base(Targetname) = trigger_changelevel : "Trigger: Change level"
 [
 	map(string) : "New map name"
 	spawnflags(flags) =
@@ -476,7 +476,13 @@
     weight(integer) : "Weight" : 100 : "How heavy the object is. Higher values make it harder to push."
 ]
 
-@SolidClass base(Targetname) = trigger_allplayers : "All Players Trigger"
+@SolidClass base(Targetname) = trigger_allplayers : "All-Players-Inside Trigger"
 [
-    map(string) : "Next map to load when all players are inside"
+	target(target_destination) : "Target"
+    wait(float) : "Wait before reactivating (0 = once only)" : 0
+]
+
+@PointClass base(Targetname) = target_changelevel : "Changes level when triggered."
+[
+    map(string) : "Next Map"
 ]

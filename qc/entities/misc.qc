@@ -688,3 +688,22 @@ void() misc_noisemaker =
 	self.nextthink = time + 0.1 + random();
 	self.think = noise_think;
 };
+
+//============================================================================
+// target_changelevel needs to be triggered by another entity
+// rather than touched by player
+//============================================================================
+void() target_changelevel_use =
+{
+    if (!self.map)
+        return;
+
+    nextmap = self.map;
+    self.think = execute_changelevel;
+    self.nextthink = time + 0.1;
+};
+
+void() target_changelevel =
+{
+    self.use = target_changelevel_use;
+};

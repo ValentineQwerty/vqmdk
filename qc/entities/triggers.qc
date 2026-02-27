@@ -663,54 +663,47 @@ void() trigger_monsterjump =
 
 void() trigger_allplayers_think =
 {
-    local entity e;
+	local entity e;
     local float total_players, inside_players;
 
     total_players = 0;
     inside_players = 0;
 
 	e = world;
-    while ((e = find_entity_by_classname(CLASS_PLAYER)))
+    while ((e = find_next_entity_by_classname(e, CLASS_PLAYER)))
     {
-        total_players += 1;
+        total_players = total_players + 1;
 
-        if (is_inside_my_brush(e))
+        if (is_inside_brush(e, self))
         {
-            inside_players += 1;
+            inside_players = inside_players + 1;
         }
     }
 
     if (total_players > 0 && inside_players == total_players)
     {
-        bprint("All players are inside. Ending level...\n");
+		bprint("Triggered allplayers!\n");
 
-        if (!self.map)
-        {
-            bprint("ERROR: trigger_allplayers has no 'map' key set!\n");
-            return;
-        }
-
-        // Replace with your level exit logic
-        // For example:
-        // changelevel ("e1m2");
-        //localcmd("changelevel yourmapname\n");
-
-        nextmap = self.map;
-        self.think = execute_changelevel;
-        self.nextthink = time + 0.1;
+		SUB_UseTargets();
+				
+		if (!self.wait) //If no reactivation needed
+		{
+			remove(self);
+		}
+		else
+		{
+			self.nextthink = time + self.wait;
+		}
 
         return;
     }
 
-    self.nextthink = time + 0.5;
+	self.nextthink = time + 0.1;
 };
 
 void() trigger_allplayers =
 {
-    self.movetype = MOVETYPE_NONE;
-    self.solid = SOLID_TRIGGER;
-    setmodel(self, self.model);
-
+	InitTrigger();
     self.think = trigger_allplayers_think;
-    self.nextthink = time + 0.5;
+    self.nextthink = time + 0.1;
 };
