@@ -3,6 +3,13 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
+# Override gitignore_global.txt rules
+!*.exe
+
+# Ignore Quake-specific built files and tools
+*.pak
+run.bat
+
 # User-specific files
 *.rsuser
 *.suo
