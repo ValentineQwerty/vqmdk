@@ -12,6 +12,10 @@ void() func_pushable_touch =
 {
     vector move;
     float force;
+    float box_top;
+    box_top = self.origin_z + self.maxs_z;
+    float player_bottom;
+    player_bottom = other.origin_z + other.mins_z;
 
     if (other.classname != CLASS_PLAYER)
         return;
@@ -20,6 +24,10 @@ void() func_pushable_touch =
         return;
 
     if (vlen(other.velocity) < 10)
+        return;
+
+    // Player is standing on or landing on top.
+    if (player_bottom >= box_top - 2)
         return;
 
     force = 200 / self.weight;
@@ -63,17 +71,10 @@ void() func_pushable_think =
     {
         groundpos = self.origin;
 
-        //
         // Restore original position
         setorigin(self, oldpos);
 
-        // Now you know where the floor is.
-        bprint("Ground z: ");
-        bprint(ftos(groundpos_z));
-        bprint("\n");
-
         // Move only part of the way.
-        //oldpos_z = oldpos_z - 2;
         self.fallspeed = self.fallspeed + 10 * frametime;
         oldpos_z = oldpos_z - self.fallspeed;
 
@@ -84,7 +85,16 @@ void() func_pushable_think =
             self.fallspeed = 0;
         }
 
-        setorigin(self, oldpos);
+        if (self.origin_z <= groundpos_z)
+        {
+            self.origin_z = groundpos_z;
+            self.fallspeed = 0;
+        }
+        else
+        {
+            // Move object in Z direction at given speed
+            self.origin_z -= self.fallspeed;
+        }
     }
 
     self.nextthink = time + 0.01;
