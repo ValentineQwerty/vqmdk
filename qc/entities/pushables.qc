@@ -1,12 +1,37 @@
 .float weight;
 .float pushtime;
 .float fallspeed;
+vector othervelocity;
 
 /*QUAKED func_pushable (0.5 0.4 0.2) ?
 A pushable object.
 Optional key:
 "weight" - default 10
 */
+
+void() decelerate_player =
+{
+    vector vel;
+
+    vel = other.velocity;
+    bprint("Player vel BFR: ");
+    bprint(vtos(vel));
+    bprint(" | ");
+
+    vel_z = other.velocity_z;   // Preserve vertical movement
+    vel_x = vel_x * 0.9;
+    vel_y = vel_y * 0.9;
+
+    other.velocity = vel;
+    bprint("Player vel AFT: ");
+    bprint(vtos(vel));
+    bprint("\n");
+
+    othervelocity = other.velocity;
+    bprint("Othervelocity: ");
+    bprint(vtos(othervelocity));
+    bprint("\n");
+};
 
 void() func_pushable_touch =
 {
@@ -28,7 +53,10 @@ void() func_pushable_touch =
 
     // Player is standing on or landing on top.
     if (player_bottom >= box_top - 2)
+    {
+        decelerate_player();
         return;
+    }
 
     force = 200 / self.weight;
 
@@ -93,12 +121,12 @@ void() func_pushable_think =
         else
         {
             // Move object in Z direction at given speed
-            self.origin_z -= self.fallspeed;
+            self.origin_z = self.origin_z - self.fallspeed;
         }
     }
 
     self.nextthink = time + 0.01;
-}
+};
 
 void() func_pushable =
 {
@@ -121,4 +149,4 @@ void() func_pushable =
     self.pushtime = 0;
 
     self.nextthink = time + 0.01;
-}
+};
