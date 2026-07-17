@@ -43,8 +43,14 @@ void() func_pushable_think =
 {
     vector pos;
 
+    vector oldpos;
+    vector groundpos;
+    oldpos = self.origin;
+
+    float dropped = droptofloor();
+
     // Simple gravity experiment
-    if (!droptofloor())
+    if (!dropped)
     {
         self.fallspeed = self.fallspeed + 40;
 
@@ -55,7 +61,30 @@ void() func_pushable_think =
     }
     else
     {
-        self.fallspeed = 0;
+        groundpos = self.origin;
+
+        //
+        // Restore original position
+        setorigin(self, oldpos);
+
+        // Now you know where the floor is.
+        bprint("Ground z: ");
+        bprint(ftos(groundpos_z));
+        bprint("\n");
+
+        // Move only part of the way.
+        //oldpos_z = oldpos_z - 2;
+        self.fallspeed = self.fallspeed + 10 * frametime;
+        oldpos_z = oldpos_z - self.fallspeed;
+
+        // Don't go through the floor.
+        if (oldpos_z < groundpos_z)
+        {
+            oldpos_z = groundpos_z;
+            self.fallspeed = 0;
+        }
+
+        setorigin(self, oldpos);
     }
 
     self.nextthink = time + 0.01;
