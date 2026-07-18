@@ -2,12 +2,19 @@
 .float pushtime;
 .float falling;
 .float pushable_fall_speed;
+.float pushable_collision_radius;
 void() func_pushable_move_done;
 void() func_pushable_start_fall;
 void() func_pushable_touch;
 void() func_pushable_move_done;
 float() player_pushes_from_above;
 vector(float force) calculate_move_vector;
+vector() find_ground_position;
+vector() get_pushable_center;
+vector(vector move_vector) get_pushable_trace_start;
+float() calculate_collision_radius;
+float(vector move_vector) check_no_collision;
+void() print_trace_debug;
 
 /*QUAKED func_pushable (0.5 0.4 0.2) ?
 A pushable object.
@@ -29,12 +36,14 @@ void() func_pushable =
     if(self.pushable_fall_speed == 0)
     self.pushable_fall_speed = 400;
 
-    setsize(self, self.mins, self.maxs);
+    // setsize(self, self.mins, self.maxs);
 
     self.touch = func_pushable_touch;
 
     if (!self.weight)
         self.weight = 10;
+
+    self.pushable_collision_radius = calculate_collision_radius();
 
     self.pushtime = 0;
     self.falling = FALSE;
@@ -44,6 +53,7 @@ void() func_pushable_touch =
 {
     vector move_vector;
     float force;
+    float safe_to_move;
 
     if (other.classname != CLASS_PLAYER)
         return;
@@ -64,45 +74,34 @@ void() func_pushable_touch =
     if(vlen(move_vector) == 0)
         return;
 
-    setorigin(self, self.origin + move_vector);
+    safe_to_move = check_no_collision(move_vector);
 
-    // If we just pushed off an edge, begin falling.
-    func_pushable_start_fall();
-
-    if (time > self.pushtime)
+    if(safe_to_move)
     {
-        sound(self, CHAN_BODY, "zombie/z_shot1.wav", 1, ATTN_NORM);
-        self.pushtime = time + 0.5;
+        setorigin(self, self.origin + move_vector);
+
+        // If we just pushed off an edge, begin falling.
+        func_pushable_start_fall();
+
+        if (time > self.pushtime)
+            sound(self, CHAN_BODY, "zombie/z_shot1.wav", 1, ATTN_NORM);
     }
+    
+    if (time > self.pushtime)
+        self.pushtime = time + 0.5;
 };
 
 void() func_pushable_start_fall =
 {
-    vector oldpos;
     vector groundpos;
-    float dropped;
 
     if (self.falling)
         return;
 
-    oldpos = self.origin;
-
-    // Find the floor below us.
-    dropped = droptofloor();
-
-    if (!dropped)
-    {
-        setorigin(self, oldpos);
-        return;
-    }
-
-    groundpos = self.origin;
-
-    // Restore the original position.
-    setorigin(self, oldpos);
+    groundpos = find_ground_position();
 
     // Already standing on the floor.
-    if (groundpos_z >= oldpos_z)
+    if (groundpos_z >= self.origin_z)
         return;
 
     self.falling = TRUE;
@@ -141,4 +140,144 @@ float() player_pushes_from_above =
         return TRUE;
     
     return FALSE;
+};
+
+vector() find_ground_position =
+{
+    vector originalpos;
+    vector resultpos;
+    float dropped;
+
+    originalpos = self.origin;
+
+    dropped = droptofloor();
+
+    if (dropped)
+        resultpos = self.origin;
+    else
+        resultpos = originalpos;
+
+    // Restore the original position.
+    setorigin(self, originalpos);
+
+    return resultpos;
+};
+
+float(vector move_vector) check_no_collision =
+{
+    vector start;
+    vector end;
+    float result;
+
+    start = get_pushable_trace_start(move_vector); // self.origin + (self.mins + self.maxs) * 0.5;
+    end   = start + move_vector;
+
+    traceline(start, end, FALSE, self);
+    
+    print_trace_debug();
+
+    if (trace_fraction == 1)
+        result = TRUE; // Nothing blocked the movement.
+    else
+        result = FALSE; // Hit something.
+
+    return result;
+};
+
+vector(vector move_vector) get_pushable_trace_start =
+{
+    vector center;
+
+    center = get_pushable_center();
+
+    if (vlen(move_vector) > 0)
+        center = center + normalize(move_vector) * self.pushable_collision_radius;
+
+    return center;
+};
+
+vector() get_pushable_center =
+{
+    return self.origin + (self.mins + self.maxs) * 0.5;
+};
+
+float() calculate_collision_radius =
+{
+    float radius;
+
+    // Use the smaller horizontal dimension so the cylinder
+    // always fits inside the pushable.
+    radius = self.size_x;
+
+    if (self.size_y < radius)
+        radius = self.size_y;
+
+    radius = radius * 0.5;
+
+    return radius;
+};
+
+
+void() print_trace_debug =
+{
+    // bprint("self.origin=");
+    // bprint(vtos(self.origin));
+    // bprint("\n");
+
+    // bprint("fraction=");
+    // bprint(ftos(trace_fraction));
+    // bprint(" startsolid=");
+    // bprint(ftos(trace_startsolid));
+    // bprint(" allsolid=");
+    // bprint(ftos(trace_allsolid));
+    // bprint("\n");
+
+// bprint("classname=");
+// bprint(self.classname);
+// bprint("\n");
+
+// bprint("model=");
+// bprint(self.model);
+// bprint("\n");
+
+// bprint("origin=");
+// bprint(vtos(self.origin));
+// bprint("\n");
+
+// bprint("absmin=");
+// bprint(vtos(self.absmin));
+// bprint("\n");
+
+// bprint("absmax=");
+// bprint(vtos(self.absmax));
+// bprint("\n");
+
+// bprint("mins=");
+// bprint(vtos(self.mins));
+// bprint("\n");
+
+// bprint("maxs=");
+// bprint(vtos(self.maxs));
+// bprint("\n");
+
+bprint("model=");
+bprint(self.model);
+bprint("\n");
+
+bprint("origin=");
+bprint(vtos(self.origin));
+bprint("\n");
+
+bprint("mins=");
+bprint(vtos(self.mins));
+bprint("\n");
+
+bprint("maxs=");
+bprint(vtos(self.maxs));
+bprint("\n");
+
+bprint("size=");
+bprint(vtos(self.size));
+bprint("\n");
+
 };
