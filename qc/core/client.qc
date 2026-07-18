@@ -1350,3 +1350,13 @@ void(entity targ, entity attacker) ClientObituary =
 		}
 	}
 };
+
+// Debugging functions
+void() print_time =
+{
+    bprint("time=");
+    bprint(ftos(time));
+    bprint(" next=");
+    bprint(ftos(self.nextthink));
+    bprint("\n");
+};
