@@ -1,21 +1,49 @@
 .float weight;
 .float pushtime;
-.float fallspeed;
+.float falling;
+.float pushable_fall_speed;
+void() func_pushable_move_done;
+void() func_pushable_start_fall;
+void() func_pushable_touch;
+void() func_pushable_move_done;
+float() player_pushes_from_above;
+vector(float force) calculate_move_vector;
 
 /*QUAKED func_pushable (0.5 0.4 0.2) ?
 A pushable object.
-Optional key:
+
+Keys:
 "weight" - default 10
 */
 
+void() func_pushable =
+{
+    precache_sound("zombie/z_shot1.wav");
+
+    setmodel(self, self.model);
+
+    self.movetype = MOVETYPE_PUSH;
+    self.solid = SOLID_BSP;
+    
+    // Should be assignable from the map.
+    if(self.pushable_fall_speed == 0)
+    self.pushable_fall_speed = 400;
+
+    setsize(self, self.mins, self.maxs);
+
+    self.touch = func_pushable_touch;
+
+    if (!self.weight)
+        self.weight = 10;
+
+    self.pushtime = 0;
+    self.falling = FALSE;
+};
+
 void() func_pushable_touch =
 {
-    vector move;
+    vector move_vector;
     float force;
-    float box_top;
-    box_top = self.origin_z + self.maxs_z;
-    float player_bottom;
-    player_bottom = other.origin_z + other.mins_z;
 
     if (other.classname != CLASS_PLAYER)
         return;
@@ -26,21 +54,20 @@ void() func_pushable_touch =
     if (vlen(other.velocity) < 10)
         return;
 
-    // Player is standing on or landing on top.
-    if (player_bottom >= box_top - 2)
-    {
+    if(player_pushes_from_above())
         return;
-    }
 
-    force = 200 / self.weight;
+    force = 100 / self.weight;
 
-    move = other.velocity;
-    move_z = 0;
+    move_vector = calculate_move_vector(force);
 
-    if (vlen(move) > 0)
-        move = normalize(move) * force;
+    if(vlen(move_vector) == 0)
+        return;
 
-    setorigin(self, self.origin + move);
+    setorigin(self, self.origin + move_vector);
+
+    // If we just pushed off an edge, begin falling.
+    func_pushable_start_fall();
 
     if (time > self.pushtime)
     {
@@ -49,78 +76,69 @@ void() func_pushable_touch =
     }
 };
 
-void() func_pushable_think =
+void() func_pushable_start_fall =
 {
-    vector pos;
-
     vector oldpos;
     vector groundpos;
+    float dropped;
+
+    if (self.falling)
+        return;
+
     oldpos = self.origin;
 
-    float dropped = droptofloor();
+    // Find the floor below us.
+    dropped = droptofloor();
 
-    // Simple gravity experiment
     if (!dropped)
     {
-        self.fallspeed = self.fallspeed + 40;
-
-        pos = self.origin;
-        pos_z = pos_z - self.fallspeed * frametime;
-
-        setorigin(self, pos);
-    }
-    else
-    {
-        groundpos = self.origin;
-
-        // Restore original position
         setorigin(self, oldpos);
-
-        // Move only part of the way.
-        self.fallspeed = self.fallspeed + 10 * frametime;
-        oldpos_z = oldpos_z - self.fallspeed;
-
-        // Don't go through the floor.
-        if (oldpos_z < groundpos_z)
-        {
-            oldpos_z = groundpos_z;
-            self.fallspeed = 0;
-        }
-
-        if (self.origin_z <= groundpos_z)
-        {
-            self.origin_z = groundpos_z;
-            self.fallspeed = 0;
-        }
-        else
-        {
-            // Move object in Z direction at given speed
-            self.origin_z = self.origin_z - self.fallspeed;
-        }
+        return;
     }
 
-    self.nextthink = time + 0.01;
+    groundpos = self.origin;
+
+    // Restore the original position.
+    setorigin(self, oldpos);
+
+    // Already standing on the floor.
+    if (groundpos_z >= oldpos_z)
+        return;
+
+    self.falling = TRUE;
+
+    SUB_CalcMove(groundpos, self.pushable_fall_speed, func_pushable_move_done);
 };
 
-void() func_pushable =
+void() func_pushable_move_done =
 {
-    precache_sound("zombie/z_shot1.wav");
+    self.falling = FALSE;
+    self.think = SUB_Null;
+    self.nextthink = -1;
+};
 
-    setmodel(self, self.model);
+vector(float force) calculate_move_vector =
+{
+    vector move_vector;
+    
+    move_vector = other.velocity;
+    move_vector_z = 0;
+    move_vector = normalize(move_vector);
+    move_vector = move_vector * force;
 
-    self.movetype = MOVETYPE_NONE;
-    self.solid = SOLID_BBOX;
+    return move_vector;
+};
 
-    setsize(self, self.mins, self.maxs);
+float() player_pushes_from_above = 
+{
+    float box_top;
+    float player_bottom;
 
-    self.touch = func_pushable_touch;
-    self.think = func_pushable_think;
+    box_top = self.origin_z + self.maxs_z;
+    player_bottom = other.origin_z + other.mins_z;
 
-    if (!self.weight)
-        self.weight = 10;
-
-    self.fallspeed = 0;
-    self.pushtime = 0;
-
-    self.nextthink = time + 0.01;
+    if (player_bottom >= box_top - 2)
+        return TRUE;
+    
+    return FALSE;
 };
