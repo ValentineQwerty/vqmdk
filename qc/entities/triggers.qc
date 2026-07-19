@@ -660,6 +660,14 @@ void() trigger_monsterjump =
 //============================================================================
 // Brush-based trigger that ends the level when all connected players are inside
 //============================================================================
+void() trigger_allplayers_think;
+
+void() trigger_allplayers =
+{
+	InitTrigger();
+    self.think = trigger_allplayers_think;
+    self.nextthink = time + 0.1;
+};
 
 void() trigger_allplayers_think =
 {
@@ -699,11 +707,4 @@ void() trigger_allplayers_think =
     }
 
 	self.nextthink = time + 0.1;
-};
-
-void() trigger_allplayers =
-{
-	InitTrigger();
-    self.think = trigger_allplayers_think;
-    self.nextthink = time + 0.1;
 };
