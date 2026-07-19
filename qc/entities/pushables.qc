@@ -24,6 +24,8 @@ Keys:
 void() func_pushable =
 {
     precache_sound("zombie/z_shot1.wav");
+    precache_sound("demon/dland2.wav");
+    precache_sound("doors/stndr2.wav");
 
     setmodel(self, self.model);
 
@@ -158,7 +160,7 @@ void() func_pushable_start_fall =
 
 void() func_pushable_move_done =
 {
-    sound(self, CHAN_BODY, "demon/dland2.wav", 1, ATTN_NORM);
+    sound(self, CHAN_BODY, "doors/stndr2.wav", 1, ATTN_NORM);
     self.falling = FALSE;
     self.think = SUB_Null;
     self.nextthink = -1;
