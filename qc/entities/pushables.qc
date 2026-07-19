@@ -14,7 +14,6 @@ vector() get_pushable_center;
 vector(vector move_vector) get_pushable_trace_start;
 float() calculate_collision_radius;
 float(vector move_vector) check_no_collision;
-void() print_trace_debug;
 
 /*QUAKED func_pushable (0.5 0.4 0.2) ?
 A pushable object.
@@ -35,8 +34,6 @@ void() func_pushable =
     // Should be assignable from the map.
     if(self.pushable_fall_speed == 0)
     self.pushable_fall_speed = 400;
-
-    // setsize(self, self.mins, self.maxs);
 
     self.touch = func_pushable_touch;
 
@@ -169,12 +166,10 @@ float(vector move_vector) check_no_collision =
     vector end;
     float result;
 
-    start = get_pushable_trace_start(move_vector); // self.origin + (self.mins + self.maxs) * 0.5;
+    start = get_pushable_trace_start(move_vector);
     end   = start + move_vector;
 
     traceline(start, end, FALSE, self);
-    
-    print_trace_debug();
 
     if (trace_fraction == 1)
         result = TRUE; // Nothing blocked the movement.
@@ -215,69 +210,4 @@ float() calculate_collision_radius =
     radius = radius * 0.5;
 
     return radius;
-};
-
-
-void() print_trace_debug =
-{
-    // bprint("self.origin=");
-    // bprint(vtos(self.origin));
-    // bprint("\n");
-
-    // bprint("fraction=");
-    // bprint(ftos(trace_fraction));
-    // bprint(" startsolid=");
-    // bprint(ftos(trace_startsolid));
-    // bprint(" allsolid=");
-    // bprint(ftos(trace_allsolid));
-    // bprint("\n");
-
-// bprint("classname=");
-// bprint(self.classname);
-// bprint("\n");
-
-// bprint("model=");
-// bprint(self.model);
-// bprint("\n");
-
-// bprint("origin=");
-// bprint(vtos(self.origin));
-// bprint("\n");
-
-// bprint("absmin=");
-// bprint(vtos(self.absmin));
-// bprint("\n");
-
-// bprint("absmax=");
-// bprint(vtos(self.absmax));
-// bprint("\n");
-
-// bprint("mins=");
-// bprint(vtos(self.mins));
-// bprint("\n");
-
-// bprint("maxs=");
-// bprint(vtos(self.maxs));
-// bprint("\n");
-
-bprint("model=");
-bprint(self.model);
-bprint("\n");
-
-bprint("origin=");
-bprint(vtos(self.origin));
-bprint("\n");
-
-bprint("mins=");
-bprint(vtos(self.mins));
-bprint("\n");
-
-bprint("maxs=");
-bprint(vtos(self.maxs));
-bprint("\n");
-
-bprint("size=");
-bprint(vtos(self.size));
-bprint("\n");
-
 };
