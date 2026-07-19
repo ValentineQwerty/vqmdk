@@ -2,7 +2,6 @@
 .float pushtime;
 .float falling;
 .float pushable_fall_speed;
-.float pushable_collision_radius;
 void() func_pushable_move_done;
 void() func_pushable_start_fall;
 void() func_pushable_touch;
@@ -10,10 +9,10 @@ void() func_pushable_move_done;
 float() player_pushes_from_above;
 vector(float force) calculate_move_vector;
 vector() find_ground_position;
-vector() get_pushable_center;
-vector(vector move_vector) get_pushable_trace_start;
-float() calculate_collision_radius;
 float(vector move_vector) check_no_collision;
+float(vector move_vector) check_corner_collisions;
+float(float corner, vector move_vector) check_corner_collision;
+vector(float corner) get_pushable_corner;
 
 /*QUAKED func_pushable (0.5 0.4 0.2) ?
 A pushable object.
@@ -39,8 +38,6 @@ void() func_pushable =
 
     if (!self.weight)
         self.weight = 10;
-
-    self.pushable_collision_radius = calculate_collision_radius();
 
     self.pushtime = 0;
     self.falling = FALSE;
@@ -162,52 +159,73 @@ vector() find_ground_position =
 
 float(vector move_vector) check_no_collision =
 {
+    return check_corner_collisions(move_vector);
+};
+
+float(vector move_vector) check_corner_collisions =
+{
+    float corner;
+
+    corner = 0;
+
+    while (corner < 8)
+    {
+        if (!check_corner_collision(corner, move_vector))
+            return FALSE;
+
+        corner = corner + 1;
+    }
+
+    return TRUE;
+};
+
+float(float corner, vector move_vector) check_corner_collision =
+{
     vector start;
     vector end;
-    float result;
 
-    start = get_pushable_trace_start(move_vector);
-    end   = start + move_vector;
+    start = get_pushable_corner(corner);
+    end = start + move_vector;
 
     traceline(start, end, FALSE, self);
 
-    if (trace_fraction == 1)
-        result = TRUE; // Nothing blocked the movement.
+    return (trace_fraction == 1);
+};
+
+// Bottom:
+// 0 = mins_x, mins_y, mins_z
+// 1 = maxs_x, mins_y, mins_z
+// 2 = maxs_x, maxs_y, mins_z
+// 3 = mins_x, maxs_y, mins_z
+
+// Top:
+// 4 = mins_x, mins_y, maxs_z
+// 5 = maxs_x, mins_y, maxs_z
+// 6 = maxs_x, maxs_y, maxs_z
+// 7 = mins_x, maxs_y, maxs_z
+vector(float corner) get_pushable_corner =
+{
+    vector p;
+
+    p = self.origin;
+
+    // X coordinate.
+    if (corner == 0 || corner == 3 || corner == 4 || corner == 7)
+        p_x = p_x + self.mins_x;
     else
-        result = FALSE; // Hit something.
+        p_x = p_x + self.maxs_x;
 
-    return result;
-};
+    // Y coordinate.
+    if (corner == 0 || corner == 1 || corner == 4 || corner == 5)
+        p_y = p_y + self.mins_y;
+    else
+        p_y = p_y + self.maxs_y;
 
-vector(vector move_vector) get_pushable_trace_start =
-{
-    vector center;
+    // Z coordinate.
+    if (corner < 4)
+        p_z = p_z + self.mins_z;
+    else
+        p_z = p_z + self.maxs_z;
 
-    center = get_pushable_center();
-
-    if (vlen(move_vector) > 0)
-        center = center + normalize(move_vector) * self.pushable_collision_radius;
-
-    return center;
-};
-
-vector() get_pushable_center =
-{
-    return self.origin + (self.mins + self.maxs) * 0.5;
-};
-
-float() calculate_collision_radius =
-{
-    float radius;
-
-    // Use the smaller horizontal dimension so the cylinder
-    // always fits inside the pushable.
-    radius = self.size_x;
-
-    if (self.size_y < radius)
-        radius = self.size_y;
-
-    radius = radius * 0.5;
-
-    return radius;
+    return p;
 };
