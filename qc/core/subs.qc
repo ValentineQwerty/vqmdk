@@ -337,7 +337,7 @@ void(void() thinkst) SUB_CheckRefire =
 
 
 /// ==========================================================
-/// Simplifies searching for entities.
+/// Simplifiy searching for entities inside the entity chain.
 /// ==========================================================
 entity(entity start, string entity_classname) find_next_entity_by_classname =
 {
@@ -365,6 +365,14 @@ float(entity e, entity brush) is_inside_brush =
 /// Utility: Print up to 5 strings concatenated, append with
 /// line break at the end if last param is 1.
 /// ==========================================================
+void(string one, string two, string three, string four, string five, float linebreak) bprint_concat;
+
+void(string one) print1 = { bprint_concat(one, "", "", "", "", TRUE); };
+void(string one, string two) print2 = { bprint_concat(one, two, "", "", "", TRUE); };
+void(string one, string two, string three) print3 = { bprint_concat(one, two, three, "", "", TRUE); };
+void(string one, string two, string three, string four) print4 = { bprint_concat(one, two, three, four, "", TRUE); };
+void(string one, string two, string three, string four, string five) print5 = { bprint_concat(one, two, three, four, five, TRUE); };
+
 void(string one, string two, string three, string four, string five, float linebreak) bprint_concat =
 {
 	bprint(one); bprint(two); bprint(three); bprint(four); bprint(five);
@@ -373,4 +381,3 @@ void(string one, string two, string three, string four, string five, float lineb
 		bprint("\n");
 	}
 };
-
