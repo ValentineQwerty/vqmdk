@@ -473,7 +473,8 @@
 
 @SolidClass base(Targetname) = func_pushable : "Pushable object"
 [
-    weight(integer) : "Weight" : 100 : "How heavy the object is. Higher values make it harder to push."
+    weight(integer) : "Weight" : 100 : "Heavier is harder to push."
+    health(integer) : "Health" : 0 : "Breakable if > 0"
 ]
 
 @SolidClass base(Targetname) = trigger_allplayers : "All-Players-Inside Trigger"
