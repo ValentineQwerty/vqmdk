@@ -9,8 +9,8 @@ void() func_pushable_move_done;
 float() player_pushes_from_above;
 vector(float force) calculate_move_vector;
 vector() find_ground_position;
-float(vector move_vector) check_no_collision;
-float(vector move_vector) check_corner_collisions;
+vector(vector move_vector) calculate_allowed_move;
+float(vector move_vector) check_no_corner_collides;
 float(float corner, vector move_vector) check_corner_collision;
 vector(float corner) get_pushable_corner;
 
@@ -47,7 +47,6 @@ void() func_pushable_touch =
 {
     vector move_vector;
     float force;
-    float safe_to_move;
 
     if (other.classname != CLASS_PLAYER)
         return;
@@ -68,9 +67,10 @@ void() func_pushable_touch =
     if(vlen(move_vector) == 0)
         return;
 
-    safe_to_move = check_no_collision(move_vector);
+    // Adjust for potential collision.
+    move_vector = calculate_allowed_move(move_vector);
 
-    if(safe_to_move)
+    if (vlen(move_vector) > 0)
     {
         setorigin(self, self.origin + move_vector);
 
@@ -83,6 +83,59 @@ void() func_pushable_touch =
     
     if (time > self.pushtime)
         self.pushtime = time + 0.5;
+};
+
+float() player_pushes_from_above = 
+{
+    float box_top;
+    float player_bottom;
+
+    box_top = self.origin_z + self.maxs_z;
+    player_bottom = other.origin_z + other.mins_z;
+
+    if (player_bottom >= box_top - 2)
+        return TRUE;
+    
+    return FALSE;
+};
+
+vector(float force) calculate_move_vector =
+{
+    vector move_vector;
+    
+    move_vector = other.velocity;
+    move_vector_z = 0;
+    move_vector = normalize(move_vector);
+    move_vector = move_vector * force;
+
+    return move_vector;
+};
+
+vector(vector move_vector) calculate_allowed_move =
+{
+    vector test_move;
+
+    test_move = move_vector;
+
+    // If no collision, return the same move vector.
+    if (check_no_corner_collides(test_move))
+        return test_move;
+
+    // If collision, try clipping Y
+    test_move = move_vector;
+    test_move_y = 0;
+
+    if (check_no_corner_collides(test_move))
+        return test_move;
+
+    // If still collision, try clipping X
+    test_move = move_vector;
+    test_move_x = 0;
+
+    if (check_no_corner_collides(test_move))
+        return test_move;
+
+    return '0 0 0';
 };
 
 void() func_pushable_start_fall =
@@ -110,32 +163,6 @@ void() func_pushable_move_done =
     self.nextthink = -1;
 };
 
-vector(float force) calculate_move_vector =
-{
-    vector move_vector;
-    
-    move_vector = other.velocity;
-    move_vector_z = 0;
-    move_vector = normalize(move_vector);
-    move_vector = move_vector * force;
-
-    return move_vector;
-};
-
-float() player_pushes_from_above = 
-{
-    float box_top;
-    float player_bottom;
-
-    box_top = self.origin_z + self.maxs_z;
-    player_bottom = other.origin_z + other.mins_z;
-
-    if (player_bottom >= box_top - 2)
-        return TRUE;
-    
-    return FALSE;
-};
-
 vector() find_ground_position =
 {
     vector originalpos;
@@ -157,12 +184,7 @@ vector() find_ground_position =
     return resultpos;
 };
 
-float(vector move_vector) check_no_collision =
-{
-    return check_corner_collisions(move_vector);
-};
-
-float(vector move_vector) check_corner_collisions =
+float(vector move_vector) check_no_corner_collides =
 {
     float corner;
 
