@@ -2,6 +2,7 @@
 .float pushtime;
 .float falling;
 .float pushable_fall_speed;
+void() func_pushable_die;
 void() func_pushable_move_done;
 void() func_pushable_start_fall;
 void() func_pushable_touch;
@@ -31,6 +32,13 @@ void() func_pushable =
 
     self.movetype = MOVETYPE_PUSH;
     self.solid = SOLID_BSP;
+
+    // Set up for being a breakable
+    if (self.health > 0)
+    {
+        self.takedamage = DAMAGE_YES;
+        self.th_die = func_pushable_die;
+    }
     
     // Should be assignable from the map.
     if(self.pushable_fall_speed == 0)
@@ -43,6 +51,20 @@ void() func_pushable =
 
     self.pushtime = 0;
     self.falling = FALSE;
+};
+
+void() func_pushable_die =
+{
+    // Stop any further damage processing.
+    self.takedamage = DAMAGE_NO;
+    self.th_die = SUB_Null;
+
+    // Make the brush disappear immediately.
+    self.solid = SOLID_NOT;
+    setmodel(self, string_null);
+
+    sound(self, CHAN_BODY, "demon/dland2.wav", 1, ATTN_NORM);
+    remove(self);
 };
 
 void() func_pushable_touch =
