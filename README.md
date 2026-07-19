@@ -1,22 +1,44 @@
+# Valentine's Quake Mod Development Kit
 
-# Cleaned up Quake id1 v1.01 QuakeC source
+The Quake Mod Development Kit (MDK) is a framework for creating new Quake gameplay experiences with no QuakeC programming.
 
-This is just the QuakeC source for vanilla Quake for modders to use.
+Its primary goal is to give level designers access to gameplay features that would normally require custom code, allowing new mechanics to be built directly inside maps. Instead of starting every project by modifying QuakeC, mappers can combine the systems provided by the MDK to create entirely new styles of gameplay.
 
-Because of vagueness with licensing, Quake 1.06 source isn't necessarily a good place to start from, it did not come with any license attached. Meanwhile 1.01 is more explicitely released under GPL in the Quake-Tools source release by id software: https://github.com/id-Software/Quake-Tools
+The MDK is designed to remain flexible and expandable. New gameplay systems are added over time while maintaining compatibility with existing content wherever possible.
 
-Anyone who has done QuakeC programming knows how messy the codebase is, and that there's some known bugs there too. While I've avoided changing the code behavior, I've done a lot of very basic clean up and fixed more harmless bugs (Rotfish monster count anyone?). The major changes from v1.06 have been redone here, but there's a few multiplayer specific things in v1.06 that are not in this release (mostly killmessages). 
+The MDK is also designed to be compatible with the original MS-DOS Quake, making it runnable on retro machines.
 
-My changes done to the codebase compared to 1.01:
-- Eliminate all warnings that FTEQCC gives it
-- Fix parm7 not being set to 0 properly in SetNewParms (cells) (like in v1.06)
-- Remove DumpScore (like in v1.06)
-- Prioritize other kill messages over liquid deaths(so monster killing you in water doesn't print drowning message) (like in v1.06)
-- Add prev weapon command (like in v1.06)
-- Fix fish monster count
-- Remove all of the "local" keywords that are not used by any relevant compiler (if your compiler refuses to compile without it, use a newer compiler)
-- Lots of automatic and manual syntax cleanup
-  - Consistent spacing for frame macros
-  - Consistent use of whitespace
-  - Consistent spacing around and inside () and {}
-  - Try to eliminate mixed indentation (using 4-size tabs as suggested by original sources)
+GitHub:
+https://github.com/ValentineQwerty/vqmdk/
+
+## Features
+
+### Advanced entity interaction
+
+The MDK extends the standard Quake entity system with new ways for entities to communicate and interact with one another, making it possible to build more complex gameplay logic directly within a map.
+
+### Movable objects
+
+Maps can contain physics-driven movable objects that players can push around to solve puzzles, block passages, activate mechanisms, or create new routes.
+
+### Modular gameplay systems
+
+Gameplay features are implemented as reusable systems rather than one-off entities. This allows multiple mechanics to be combined without requiring custom QuakeC modifications for every new map.
+
+### Mapper-friendly design
+
+The focus of the MDK is to move gameplay creation from source code into the map editor. Many mechanics can be configured using entity properties instead of programming.
+
+### Expandable framework
+
+The MDK is under active development, with additional gameplay systems being added over time. The goal is to provide an ever-growing toolbox for creating custom Quake experiences.
+
+## Philosophy
+
+Traditional Quake mods often require writing QuakeC to introduce new gameplay mechanics. The MDK takes a different approach by providing reusable systems that can be configured and combined directly within a map.
+
+This allows mappers to spend more time designing gameplay and less time writing code, while still giving experienced developers the freedom to extend the framework further when needed.
+
+## Current status
+
+The project is actively evolving, and new gameplay systems are added as they are developed. The long-term goal is to make the MDK a comprehensive toolkit for building custom Quake maps with unique gameplay styles while requiring little or no programming knowledge.
