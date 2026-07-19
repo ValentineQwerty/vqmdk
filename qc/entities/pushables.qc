@@ -158,6 +158,7 @@ void() func_pushable_start_fall =
 
 void() func_pushable_move_done =
 {
+    sound(self, CHAN_BODY, "demon/dland2.wav", 1, ATTN_NORM);
     self.falling = FALSE;
     self.think = SUB_Null;
     self.nextthink = -1;
