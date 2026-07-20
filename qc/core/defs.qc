@@ -466,6 +466,8 @@ string CLASS_INFO_INTERMISSION = "info_intermission";
 
 .entity oldenemy; // mad at this player before taking damage
 
+.float nonliving; // If nonliving entity TRUE, prevent bleeding on damage
+
 .float speed;
 
 .float lefty;
@@ -714,5 +716,3 @@ void(entity targ, entity inflictor, entity attacker, float damage) T_Damage;
 float(entity e, float healamount, float ignore) T_Heal; // health function
 
 float(entity targ, entity inflictor) CanDamage;
-
-

@@ -67,7 +67,10 @@ void() W_FireAxe =
 	if (trace_ent.takedamage)
 	{
 		trace_ent.axhitme = 1;
-		SpawnBlood(org, '0 0 0', 20);
+
+		if(!trace_ent.nonliving)
+			SpawnBlood(org, '0 0 0', 20);
+
 		T_Damage(trace_ent, self, self, 20);
 	}
 	else
@@ -228,7 +231,9 @@ void(float damage, vector dir) TraceAttack =
 
 	if (trace_ent.takedamage)
 	{
-		SpawnBlood(org, vel*0.2, damage);
+		if(!trace_ent.nonliving)
+			SpawnBlood(org, vel*0.2, damage);
+
 		AddMultiDamage(trace_ent, damage);
 	}
 	else
@@ -700,7 +705,9 @@ void() spike_touch =
 // hit something that bleeds
 	if (other.takedamage)
 	{
-		spawn_touchblood(9);
+		if(!other.nonliving)
+			spawn_touchblood(9);
+
 		T_Damage(other, self, self.owner, 9);
 	}
 	else
@@ -739,7 +746,9 @@ void() superspike_touch =
 // hit something that bleeds
 	if (other.takedamage)
 	{
-		spawn_touchblood(18);
+		if(!other.nonliving)
+			spawn_touchblood(18);
+
 		T_Damage(other, self, self.owner, 18);
 	}
 	else

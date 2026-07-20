@@ -32,6 +32,7 @@ void() func_pushable =
 
     self.movetype = MOVETYPE_PUSH;
     self.solid = SOLID_BSP;
+    self.nonliving = TRUE;
 
     // Set up for being a breakable
     if (self.health > 0)
